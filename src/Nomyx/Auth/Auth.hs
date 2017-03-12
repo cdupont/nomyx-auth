@@ -22,6 +22,7 @@ import           Data.Maybe
 import           Control.Monad.State
 import           Data.Acid.Advanced                  (query')
 import           Data.Text as T
+import           Safe
 
 launchAuth :: FilePath -> IO AuthState
 launchAuth sd = do
@@ -54,5 +55,5 @@ getPlayerNumber (AuthState auth _) = do
 getUser :: AuthState -> ServerPartT IO (Maybe User)
 getUser (AuthState auth _) = do
   userId <- getUserId auth
-  liftIO $ query' auth (GetUserByUserId $ fromJust userId)
+  liftIO $ query' auth (GetUserByUserId $ fromJustNote "user Id doesn't exists" userId)
 
